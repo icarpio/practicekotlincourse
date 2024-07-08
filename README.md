@@ -1,1 +1,1 @@
-# practicekotlincourse
+# Practice kotlin course
