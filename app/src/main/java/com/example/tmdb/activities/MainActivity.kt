@@ -1,10 +1,12 @@
 package com.example.tmdb.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tmdb.activities.DetailActivity.Companion.EXTRA_ID
 import com.example.tmdb.adapters.MovieAdapter
 import com.example.tmdb.data.Movie
 import com.example.tmdb.databinding.ActivityMainBinding
@@ -23,6 +25,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        movieAdapter = MovieAdapter(emptyList()) {
+            navigatetoDetail(dataset[it].id)
+        }
+        binding.recyclerView.adapter = movieAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         // Set click listeners for the buttons
         binding.btnGetBillBoard.setOnClickListener {
@@ -32,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         binding.btnGetPopulares.setOnClickListener {
             getPopulares()
         }
-
     }
     private fun getBillBoard() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -51,8 +57,7 @@ class MainActivity : AppCompatActivity() {
                     if (dataset.isNullOrEmpty()) {
                         Log.e("API", "Dataset is null or empty: $dataset")
                     } else {
-                        movieAdapter = MovieAdapter(dataset)
-                        binding.recyclerView.adapter = movieAdapter
+                        movieAdapter.updateData(dataset)
                         binding.recyclerView.visibility = View.VISIBLE
                         Log.e("API", "Results found: $dataset")
                     }
@@ -83,8 +88,7 @@ class MainActivity : AppCompatActivity() {
                     if (dataset.isNullOrEmpty()) {
                         Log.e("API", "Dataset is null or empty: $dataset")
                     } else {
-                        movieAdapter = MovieAdapter(dataset)
-                        binding.recyclerView.adapter = movieAdapter
+                        movieAdapter.updateData(dataset)
                         binding.recyclerView.visibility = View.VISIBLE
                         Log.e("API", "Results found: $dataset")
                     }
@@ -96,6 +100,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    //Navergar desde Main a Detail
+    private fun navigatetoDetail(id: Int) {
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra(EXTRA_ID, id)
+        startActivity(intent)
     }
 
 }

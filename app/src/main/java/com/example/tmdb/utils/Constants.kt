@@ -9,5 +9,6 @@ object Constants {
     const val SPANISH = "es-ES"
     const val ENGLISH = "en-US"
 
+
     const val MAX_CALIFICATION = 10.0
 }
