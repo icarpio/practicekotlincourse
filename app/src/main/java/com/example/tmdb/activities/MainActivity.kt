@@ -4,8 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tmdb.R
 import com.example.tmdb.activities.DetailActivity.Companion.EXTRA_ID
 import com.example.tmdb.adapters.MovieAdapter
 import com.example.tmdb.data.Movie
@@ -26,9 +29,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        movieAdapter = MovieAdapter(emptyList()) {
-            navigatetoDetail(dataset[it].id)
-        }
+        // Setup RecyclerView
+        movieAdapter = MovieAdapter(onItemSelected = { movieId ->
+            navigatetoDetail(movieId)
+        })
         binding.recyclerView.adapter = movieAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         // Set click listeners for the buttons
@@ -107,6 +111,16 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra(EXTRA_ID, id)
         startActivity(intent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+
+        val searchViewItem = menu?.findItem(R.id.action_search)
+        //val searchView = searchViewItem.actionView as SearchView
+
+        return true
     }
 
 }

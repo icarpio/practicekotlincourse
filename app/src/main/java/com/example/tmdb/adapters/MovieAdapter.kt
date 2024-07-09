@@ -19,7 +19,7 @@ class MovieAdapter(
     class MovieViewHolder(private val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie, onItemSelected: (Int) ->Unit) {
             val posterImage = URL_IMAGE + movie.poster_path
-            binding.nameMovieTextView.text = movie.original_title
+            binding.nameMovieTextView.text = movie.title
             Picasso.get().load(posterImage).into(binding.movieImageView)
 
             //Pasa el id del superheroe al Adapter
