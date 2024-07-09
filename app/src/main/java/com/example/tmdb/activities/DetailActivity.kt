@@ -1,17 +1,17 @@
 package com.example.tmdb.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
 import com.example.tmdb.R
 import com.example.tmdb.data.Movie
 import com.example.tmdb.databinding.ActivityDetailBinding
 import com.example.tmdb.utils.Constants
 import com.example.tmdb.utils.RetrofitClient
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +24,8 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
 
     private lateinit var movie: Movie
+
+    private var favoriteMenuItem:MenuItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -32,6 +34,7 @@ class DetailActivity : AppCompatActivity() {
         Log.e("MOVIE ID",id.toString())
         getMovieDetails(id)
     }
+
 
     private fun getMovieDetails(id:Int) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -58,6 +61,27 @@ class DetailActivity : AppCompatActivity() {
         //binding.shBiographyTextView.text = superhero.biography.fullname
         //binding.shPublisherTextView.text = superhero.biography.publisher
     }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_activity_detail, menu)
+        favoriteMenuItem = menu.findItem(R.id.action_favourite)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            R.id.action_favourite -> {
+
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    }
 
 }
