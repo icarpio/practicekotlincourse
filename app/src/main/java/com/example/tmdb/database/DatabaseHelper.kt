@@ -50,7 +50,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val result = db.insert(TABLE_MOVIES, null, contentValues)
         return result != -1L
     }
-
+    //Actulizar favorito
     fun updateMovie(favoriteMovie: FavoriteMovie): Boolean {
         val db = writableDatabase
         return try {
@@ -74,7 +74,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    // Eliminar customer
+    // Eliminar favorito
     fun deleteMovie(id: Int): Boolean {
         val db = writableDatabase
         val result = db.delete(TABLE_MOVIES, "$COLUMN_MOVIE_ID = ?", arrayOf(id.toString()))
