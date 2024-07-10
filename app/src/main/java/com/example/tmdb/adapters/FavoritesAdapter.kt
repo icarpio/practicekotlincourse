@@ -13,7 +13,9 @@ import com.squareup.picasso.Picasso
 
 
 class FavoritesAdapter (private var favoriteMovies:List<FavoriteMovie>,
-                        private val onItemDeleteClickListener: (Int) -> Unit)
+                        private val onItemDeleteClickListener: (Int) -> Unit,
+                        private val onItemChangeClickListener: (Int) -> Unit
+    )
     : RecyclerView.Adapter<FavoritesAdapter.FavoriteViewHolder>(){
     class FavoriteViewHolder(val binding: ItemFavoriteMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun render(favoriteMovie: FavoriteMovie){
@@ -28,7 +30,6 @@ class FavoritesAdapter (private var favoriteMovies:List<FavoriteMovie>,
                 binding.viewMovieImageView.setColorFilter(bitter)
                 binding.viewMovieImageView.setImageResource(R.drawable.nocheck)
             }
-
         }
     }
 
@@ -43,9 +44,10 @@ class FavoritesAdapter (private var favoriteMovies:List<FavoriteMovie>,
         holder.binding.deleteButton.setOnClickListener {
             onItemDeleteClickListener(position)
         }
-
+        holder.binding.viewMovieImageView.setOnClickListener {
+            onItemChangeClickListener(position)
+        }
     }
-
     fun updateData(dataSet: List<FavoriteMovie>) {
         this.favoriteMovies = dataSet
         notifyDataSetChanged()

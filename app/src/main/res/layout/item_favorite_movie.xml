@@ -39,5 +39,5 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/happy" />
+        android:src="@drawable/delete" />
 </LinearLayout>
