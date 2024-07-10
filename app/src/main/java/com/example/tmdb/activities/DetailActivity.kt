@@ -1,5 +1,6 @@
 package com.example.tmdb.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -7,13 +8,18 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.tmdb.R
+import com.example.tmdb.data.FavoriteMovie
 import com.example.tmdb.data.Movie
+import com.example.tmdb.database.DatabaseHelper
 import com.example.tmdb.databinding.ActivityDetailBinding
+import com.example.tmdb.databinding.DialogAddFavoriteBinding
 import com.example.tmdb.utils.Constants
 import com.example.tmdb.utils.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class DetailActivity : AppCompatActivity() {
@@ -22,14 +28,16 @@ class DetailActivity : AppCompatActivity() {
         const val EXTRA_ID = "EXTRA_ID"
     }
     private lateinit var binding: ActivityDetailBinding
-
     private lateinit var movie: Movie
+    private lateinit var databaseHelper: DatabaseHelper
 
     private var favoriteMenuItem:MenuItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        databaseHelper = DatabaseHelper(this)
+
         val id = intent.getIntExtra("EXTRA_ID", -1)
         Log.e("MOVIE ID",id.toString())
         getMovieDetails(id)
@@ -42,7 +50,7 @@ class DetailActivity : AppCompatActivity() {
                 val response = RetrofitClient.webService.getMovieById(id,Constants.API_KEY, Constants.SPANISH)
                 if(response.body() != null){
                     runOnUiThread {
-                        //createUI(response.body()!!)
+                        movie = response.body()!!
                         Log.e("MOVIE DETAIL", response.body().toString())
                     }
                 }else {
@@ -75,13 +83,38 @@ class DetailActivity : AppCompatActivity() {
                 true
             }
             R.id.action_favourite -> {
-
+                showAddFavoriteDialog()
                 true
             }
-
+            R.id.action_show_favorites-> {
+                val intent = Intent(this, FavoritesActivity::class.java)
+                startActivity(intent)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
+
+    private fun showAddFavoriteDialog() {
+        val binding = DialogAddFavoriteBinding.inflate(layoutInflater)
+        AlertDialog.Builder(this)
+            .setTitle("¿Seguro que deseas añadir la película?")
+            .setView(binding.root)
+            .setPositiveButton("OK") { dialog, which ->
+                val title = movie.title
+                val image = Constants.URL_IMAGE + movie.poster_path
+                val favorite = FavoriteMovie(-1, title, image, 0)
+
+                // Lanzar corrutina para insertar la película
+                CoroutineScope(Dispatchers.Main).launch {
+                    databaseHelper.insertMovieWithCheckDuplicate(favorite, applicationContext)
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .create()
+            .show()
+    }
+
+
 
 }

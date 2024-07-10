@@ -8,7 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdb.R
@@ -98,7 +98,6 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         movieAdapter.updateData(dataset)
                         binding.recyclerView.visibility = View.VISIBLE
-                        Log.e("API", "Results found: $dataset")
                     }
                 }
             } catch (e: Exception) {

@@ -6,7 +6,13 @@
     <item
         android:id="@+id/action_favourite"
         android:title="Favorite"
-        android:icon="@drawable/fav"
+        android:icon="@drawable/show"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/action_show_favorites"
+        android:title="Favorite"
+        android:icon="@drawable/happy"
         app:showAsAction="always"
         />
 </menu>

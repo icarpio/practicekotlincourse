@@ -2,11 +2,17 @@ package com.example.tmdb.database
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.Handler
+import android.os.Looper
+import android.provider.BaseColumns
 import android.util.Log
+import android.widget.Toast
 import com.example.tmdb.data.FavoriteMovie
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -38,48 +44,63 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_MOVIES")
         onCreate(db)
     }
+    fun insertMovie(favorite: FavoriteMovie) {
+            val db = writableDatabase
+            // Verificar si la película ya existe
+            val cursor = db.query(
+                TABLE_MOVIES,
+                arrayOf(COLUMN_MOVIE_ID),
+                "$COLUMN_MOVIE_TITLE = ?",
+                arrayOf(favorite.title),
+                null,
+                null,
+                null
+            )
+            val exists = cursor.count > 0
+            cursor.close()
+            Log.d("DB - INSERT", "MoViE ExiTS")
+            if (exists) {
+                // Mostrar Toast o registrar que la película ya existe (en el hilo principal)
+            } else {
+                // Insertar la película si no existe
+                val contentValues = ContentValues().apply {
+                    put(COLUMN_MOVIE_TITLE, favorite.title)
+                    put(COLUMN_IMAGE, favorite.image)
+                    put(COLUMN_MOVIE_VIEW, favorite.viewMovie)
+                }
+                val result = db.insert(TABLE_MOVIES, null, contentValues)
+                favorite.id = result.toInt()
+                Log.d("DB - INSERT", "Inserted movie with ID: ${favorite.id}")
+            }
+    }
+    fun checkMovie(){
 
-
-    fun insertMovie(title: String, image: String,movieView:Int): Boolean {
-        val db = writableDatabase
-        val contentValues = ContentValues().apply {
-            put(COLUMN_MOVIE_TITLE,title )
-            put(COLUMN_IMAGE, image)
-            put(COLUMN_MOVIE_VIEW, movieView)
-        }
-        val result = db.insert(TABLE_MOVIES, null, contentValues)
-        return result != -1L
     }
     //Actulizar favorito
-    fun updateMovie(favoriteMovie: FavoriteMovie): Boolean {
+    fun updateMovie(favorite: FavoriteMovie): Boolean {
         val db = writableDatabase
         return try {
             val contentValues = ContentValues().apply {
-                put(COLUMN_MOVIE_TITLE, favoriteMovie.title)
-                put(COLUMN_IMAGE, favoriteMovie.image)
+                put(COLUMN_MOVIE_TITLE, favorite.title)
+                put(COLUMN_IMAGE, favorite.image)
+                put(COLUMN_MOVIE_VIEW, favorite.viewMovie)
             }
             val result = db.update(
                 TABLE_MOVIES,
                 contentValues,
                 "${COLUMN_MOVIE_ID} = ?",
-                arrayOf(favoriteMovie.id.toString())
+                arrayOf(favorite.id.toString())
             )
-            Log.d("TaskUpdate", "Task updated with id: ${favoriteMovie.id}, Result: $result")
+            Log.d("DB - Update", "Movie updated with id: ${favorite.id}, Result: $result")
             result > 0  // Retorna true si al menos una fila fue actualizada
         } catch (e: Exception) {
-            Log.e("TaskUpdate", "Error updating task", e)
+            Log.e("DB - Update", "Error updating movie", e)
             false
         } finally {
             db.close()
         }
     }
 
-    // Eliminar favorito
-    fun deleteMovie(id: Int): Boolean {
-        val db = writableDatabase
-        val result = db.delete(TABLE_MOVIES, "$COLUMN_MOVIE_ID = ?", arrayOf(id.toString()))
-        return result > 0
-    }
 
     //Obtener todos los favoritos
     fun getAllMovies(): List<FavoriteMovie> {
@@ -92,15 +113,62 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MOVIE_TITLE))
                 val image = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE))
                 val movieView = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MOVIE_VIEW))
-                val favavorite = FavoriteMovie(id, title, image,movieView)
-                favorites.add(favavorite)
+                val favorite = FavoriteMovie(id, title, image,movieView)
+                favorites.add(favorite)
                 // Imprimir en el log
-                Log.d("TaskRecord", "ID: $id, Title: $title, ImageUrl: $image")
-
+                Log.d("Favorite Movie", "ID: $id, Title: $title, ImageUrl: $image")
             } while (cursor.moveToNext())
         }
         cursor.close()
         db.close()
         return favorites
     }
+
+    // Eliminar favorito
+
+    suspend fun insertMovieWithCheckDuplicate(favorite: FavoriteMovie, context: Context) {
+        withContext(Dispatchers.IO) {
+            val db = writableDatabase
+            // Verificar si la película ya existe
+            val cursor = db.query(
+                TABLE_MOVIES,
+                arrayOf(COLUMN_MOVIE_ID),
+                "$COLUMN_MOVIE_TITLE = ?",
+                arrayOf(favorite.title),
+                null,
+                null,
+                null
+            )
+            val exists = cursor.count > 0
+            cursor.close()
+
+            if (exists) {
+                // Mostrar Toast en el hilo principal
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "La película '${favorite.title}' ya está en tus favoritos.", Toast.LENGTH_SHORT).show()
+                }
+                // Opcional: Puedes registrar el mensaje en el log
+                // Log.d("DB - INSERT", "Movie with title ${favorite.title} already exists.")
+            } else {
+                // Insertar la película si no existe
+                val contentValues = ContentValues().apply {
+                    put(COLUMN_MOVIE_TITLE, favorite.title)
+                    put(COLUMN_IMAGE, favorite.image)
+                    put(COLUMN_MOVIE_VIEW, favorite.viewMovie)
+                }
+                val result = db.insert(TABLE_MOVIES, null, contentValues)
+                favorite.id = result.toInt()
+                // Log.d("DB - INSERT", "Inserted movie with ID: ${favorite.id}")
+            }
+        }
+    }
+
+    fun deleteMovie(favorite: FavoriteMovie) {
+        val db = writableDatabase
+        val deletedRows = db.delete(TABLE_MOVIES, "$COLUMN_MOVIE_ID = ?", arrayOf(favorite.id.toString()))
+        Log.i("DELETE", "Deleted: $deletedRows row(s)")
+        db.close()
+    }
+
+
 }
