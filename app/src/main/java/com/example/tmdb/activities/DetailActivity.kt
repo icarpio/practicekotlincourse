@@ -1,5 +1,6 @@
 package com.example.tmdb.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,10 +18,12 @@ import com.example.tmdb.databinding.ActivityDetailBinding
 import com.example.tmdb.databinding.DialogAddFavoriteBinding
 import com.example.tmdb.utils.Constants
 import com.example.tmdb.utils.RetrofitClient
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class DetailActivity : AppCompatActivity() {
 
@@ -43,7 +46,6 @@ class DetailActivity : AppCompatActivity() {
         getMovieDetails(id)
     }
 
-
     private fun getMovieDetails(id:Int) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -51,7 +53,8 @@ class DetailActivity : AppCompatActivity() {
                 if(response.body() != null){
                     runOnUiThread {
                         movie = response.body()!!
-                        Log.e("MOVIE DETAIL", response.body().toString())
+                        createUI(movie)
+                        //Log.e("MOVIE DETAIL", response.body().toString())
                     }
                 }else {
                     Toast.makeText(this@DetailActivity, "Error al obtener los detalles", Toast.LENGTH_SHORT).show()
@@ -65,9 +68,14 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+
     private fun createUI(movie:Movie){
-        //binding.shBiographyTextView.text = superhero.biography.fullname
-        //binding.shPublisherTextView.text = superhero.biography.publisher
+        val posterImage = Constants.URL_IMAGE + movie.poster_path
+        binding.titleTextView.text = movie.title
+        Picasso.get().load(posterImage).into(binding.posterImageView)
+        binding.overviewTextView.text = movie.overview
+        val formattedNumber = String.format(Locale.US, "%.1f", movie.vote_average)
+        binding.voteTextView.text = formattedNumber
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater

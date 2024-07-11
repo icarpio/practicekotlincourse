@@ -20,15 +20,15 @@ class FavoritesAdapter (private var favoriteMovies:List<FavoriteMovie>,
     class FavoriteViewHolder(val binding: ItemFavoriteMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun render(favoriteMovie: FavoriteMovie){
             val green = binding.root.context.getColor(R.color.success)
-            val bitter = binding.root.context.getColor(R.color.biteer)
+            val bitter = binding.root.context.getColor(R.color.black)
             binding.titleTextView.text = favoriteMovie.title
             Picasso.get().load(favoriteMovie.image).into(binding.movieImageView)
             if(favoriteMovie.viewMovie == 1){
                 binding.viewMovieImageView.setColorFilter(green)
-                binding.viewMovieImageView.setImageResource(R.drawable.check)
+                binding.viewMovieImageView.setImageResource(R.drawable.eye_open)
             }else {
                 binding.viewMovieImageView.setColorFilter(bitter)
-                binding.viewMovieImageView.setImageResource(R.drawable.nocheck)
+                binding.viewMovieImageView.setImageResource(R.drawable.eye_slash)
             }
         }
     }

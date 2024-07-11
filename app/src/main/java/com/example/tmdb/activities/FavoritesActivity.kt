@@ -85,7 +85,7 @@ class FavoritesActivity : AppCompatActivity() {
         val fav = favoriteList[position]
         val binding = DialogChangeFavoriteBinding.inflate(layoutInflater)
         androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("¿Seguro que deseas modificar la película?")
+            .setTitle("¿Seguro que quieres modificar el estado de la pelicula?")
             .setView(binding.root)
             .setPositiveButton("OK") { dialog, which ->
                 if(fav.viewMovie == 0) {
