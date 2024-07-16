@@ -27,3 +27,5 @@ elemento con una función lambda.
 un valor en sesión mediante SharedPreferences.
 
 ![alt text](https://github.com/icarpio/practicekotlincourse/blob/main/Main.png)
+
+<img src=https://github.com/icarpio/practicekotlincourse/blob/main/Main.png" alt="Descripción 1" width="50"/> <img src="https://github.com/icarpio/practicekotlincourse/blob/main/Detail.png" alt="Descripción 2" width="200"/> <img src="https://github.com/icarpio/practicekotlincourse/blob/main/Fav.png" alt="Descripción 3" width="50"/>
