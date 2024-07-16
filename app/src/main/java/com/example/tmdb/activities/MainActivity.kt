@@ -60,9 +60,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val savedColor = sharedPreferences.getInt("selected_color", R.color.colorPrimary)
+        val saved = sharedPreferences.getInt("selected_color", R.color.colorPrimary)
 
-        setButtonsColor(getColor(savedColor))
+        setButtonsColor(getColor(saved))
     }
 
     fun setButtonsColor (color: Int) {
