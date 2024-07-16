@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                 val response = RetrofitClient.webService.getBillboard(Constants.API_KEY,Constants.SPANISH)
                 val responseBody = response.body()
                 if (responseBody != null) {
-                    dataset = responseBody.results
+                    dataset = responseBody.results.sortedByDescending { it.release_date }
                 } else {
                     Log.e("API", "Response body is null")
                 }

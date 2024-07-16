@@ -7,7 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="stat_combat">#A1AC38</color>
     <color name="bahama">#005994</color>
     <color name="cerulean">#00a7d1</color>
     <color name="supernova">#ffcc00</color>
@@ -16,4 +15,12 @@
     <color name="malibu">#66d9ff</color>
     <color name="pinkdawn">#f3e8e2</color>
     <color name="success">#124714</color>
+    <color name="colorPrimary">#00a7d1</color>
+    <color name="colorComplementary">#d1002f</color>
+    <color name="colorAnalog1">#0059d1</color>
+    <color name="colorAnalog2">#00d189</color>
+    <color name="colorTriadic1">#d100a7</color>
+    <color name="colorTriadic2">#a7d100</color>
+    <color name="colorMonochromatic1">#007ba3</color>
+    <color name="colorMonochromatic2">#66d5e8</color>
 </resources>

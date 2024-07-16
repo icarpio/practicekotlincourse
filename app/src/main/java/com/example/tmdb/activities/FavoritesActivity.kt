@@ -55,14 +55,14 @@ class FavoritesActivity : AppCompatActivity() {
     fun showDeleteConfirmationDialog(position: Int) {
         // Crea el AlertDialog
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("¿Estás seguro de que deseas eliminar esta tarea?")
+        builder.setMessage("¿Estás seguro de que deseas eliminar la pelicula?")
             .setPositiveButton("Sí") { dialog, id ->
                 // Usuario hizo clic en "Sí", así que elimina la tarea
                 Log.i("DELETE",favoriteList[position].toString())
                 databaseHelper.deleteMovie(favoriteList[position])
                 Toast.makeText(
                     this,
-                    "Tarea borrada correctamente: ${favoriteList[position].title}",
+                    "Pelicula borrada correctamente: ${favoriteList[position].title}",
                     Toast.LENGTH_SHORT
                 ).show()
                 loadData()
@@ -97,7 +97,7 @@ class FavoritesActivity : AppCompatActivity() {
                 loadData()
                 Toast.makeText(
                     this,
-                    "Tarea actualizada correctamente",
+                    "Pelicula actualizada correctamente",
                     Toast.LENGTH_SHORT
                 ).show()
                 loadData()
