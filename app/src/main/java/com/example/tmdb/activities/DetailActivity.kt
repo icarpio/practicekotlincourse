@@ -2,6 +2,10 @@ package com.example.tmdb.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -76,7 +80,10 @@ class DetailActivity : AppCompatActivity() {
         binding.overviewTextView.text = movie.overview
         val formattedNumber = String.format(Locale.US, "%.1f", movie.vote_average)
         binding.voteTextView.text = formattedNumber
+
     }
+
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_activity_detail, menu)
@@ -121,6 +128,28 @@ class DetailActivity : AppCompatActivity() {
             .setNegativeButton("Cancelar", null)
             .create()
             .show()
+    }
+
+    fun drawCircleWithPercentage(canvas: Canvas, percentage: Double, x: Float, y: Float, radius: Float) {
+        val paint = Paint()
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 10f
+
+        // Dibujar el círculo completo
+        paint.color = Color.GRAY
+        canvas.drawCircle(x, y, radius, paint)
+
+        // Dibujar el arco con el porcentaje
+        paint.color = Color.GREEN
+        val oval = RectF(x - radius, y - radius, x + radius, y + radius)
+        val sweepAngle = (percentage / 100) * 360
+        canvas.drawArc(oval, 0f, sweepAngle.toFloat(), false, paint)
+
+        // Dibujar el texto con el porcentaje
+        paint.color = Color.BLACK
+        paint.textSize = 40f
+        val text = "${percentage.toInt()}%"
+        canvas.drawText(text, x - (paint.measureText(text) / 2), y + (paint.textSize / 2), paint)
     }
 
 
