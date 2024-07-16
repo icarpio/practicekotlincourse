@@ -16,11 +16,10 @@
     <color name="pinkdawn">#f3e8e2</color>
     <color name="success">#124714</color>
     <color name="colorPrimary">#00a7d1</color>
-    <color name="colorComplementary">#d1002f</color>
-    <color name="colorAnalog1">#0059d1</color>
-    <color name="colorAnalog2">#00d189</color>
-    <color name="colorTriadic1">#d100a7</color>
-    <color name="colorTriadic2">#a7d100</color>
-    <color name="colorMonochromatic1">#007ba3</color>
-    <color name="colorMonochromatic2">#66d5e8</color>
+    <color name="Complementary">#d1002f</color>
+    <color name="Analog1">#0059d1</color>
+    <color name="Analog2">#00d189</color>
+    <color name="Triadic1">#d100a7</color>
+    <color name="Triadic2">#a7d100</color>
+    <color name="Monochromatic2">#66d5e8</color>
 </resources>

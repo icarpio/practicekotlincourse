@@ -49,9 +49,7 @@ class FavoritesActivity : AppCompatActivity() {
         )
         // Asignar el adaptador al RecyclerView
         binding.recyclerViewFavorites.adapter = favoriteAdapter
-
     }
-
     fun showDeleteConfirmationDialog(position: Int) {
         // Crea el AlertDialog
         val builder = AlertDialog.Builder(this)

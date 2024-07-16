@@ -10,4 +10,10 @@
         app:showAsAction="collapseActionView|always"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         />
+    <item
+        android:id="@+id/action_change_color"
+        android:title="Search"
+        android:icon="@drawable/color"
+        app:showAsAction="always"
+        />
 </menu>

@@ -1,6 +1,7 @@
 package com.example.tmdb.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +11,12 @@ import android.view.MenuItem
 import android.view.View
 
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdb.R
 import com.example.tmdb.activities.DetailActivity.Companion.EXTRA_ID
 import com.example.tmdb.adapters.MovieAdapter
+import com.example.tmdb.data.ColorDialog
 import com.example.tmdb.data.Movie
 import com.example.tmdb.databinding.ActivityMainBinding
 import com.example.tmdb.utils.Constants
@@ -27,6 +30,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var movieAdapter: MovieAdapter
     var dataset: List<Movie> = emptyList()
+
+    lateinit var sharedPreferences: SharedPreferences
+
+    // SharedPreferences
+    //val savedColor = sharedPreferences.getInt("selected_color", defaultColor)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +58,18 @@ class MainActivity : AppCompatActivity() {
         binding.btnGetPopulares.setOnClickListener {
             getPopulares()
         }
+
+        sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val savedColor = sharedPreferences.getInt("selected_color", R.color.colorPrimary)
+
+        setButtonsColor(getColor(savedColor))
     }
+
+    fun setButtonsColor (color: Int) {
+        binding.btnGetBillBoard.setBackgroundColor(color)
+        binding.btnGetPopulares.setBackgroundColor(color)
+    }
+
     private fun getBillBoard() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -142,6 +161,20 @@ class MainActivity : AppCompatActivity() {
             R.id.action_search -> {
                 true
             }
+            R.id.action_change_color -> {
+                // Mostrar el diálogo de selección de color
+                val colors = arrayOf(
+                    R.color.colorPrimary,
+                    R.color.Triadic1,
+                    R.color.Triadic2
+                )
+                val colorDialog = ColorDialog(this, colors) { selectedColor ->
+                    sharedPreferences.edit().putInt("selected_color", selectedColor).apply()
+                    setButtonsColor(getColor(selectedColor))
+                }
+                colorDialog.show()
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -172,5 +205,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 }
